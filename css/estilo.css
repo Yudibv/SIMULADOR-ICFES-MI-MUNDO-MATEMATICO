@@ -1,10 +1,10 @@
 :root {
-  --azul: #0a4f8a; /* Azul institucional exacto del logo */
-  --rojo: #d92d20; /* Rojo vivo y llamativo del plano cartesiano del logo */
-  --texto: #111111;
+  --azul: #0044cc; /* Azul brillante, eléctrico y profundo */
+  --rojo: #ff0033; /* Rojo vivo, puro y sumamente brillante */
+  --texto: #000000;
   --fondo: #ffffff;
-  --suave: #fdf3f2;
-  --borde: #fcdad7;
+  --suave: #fff0f3;
+  --borde: #ff8099;
 }
 
 * { box-sizing: border-box; }
@@ -42,16 +42,16 @@ a { color: var(--azul); }
 }
 
 .marca-icfes { color: var(--azul); font-weight: 900; letter-spacing: 0.08em; }
-.marca-area { color: var(--rojo); font-weight: 800; }
+.marca-area { color: var(--rojo); font-weight: 900; }
 
 .modo-todas, .temporizador {
   margin: 0;
   color: var(--azul);
-  font-weight: 800;
+  font-weight: 900;
   font-size: 0.95rem;
 }
 
-.temporizador.aviso { color: #b42318; }
+.temporizador.aviso { color: #cc0000; }
 
 .contenedor {
   max-width: 980px;
@@ -61,10 +61,11 @@ a { color: var(--azul); }
 
 .pie {
   text-align: center;
-  color: #333;
+  color: #111;
   font-size: 0.85rem;
   padding: 1.5rem;
   border-top: 2px solid var(--borde);
+  font-weight: 600;
 }
 
 .hero h1, .panel h1 {
@@ -76,14 +77,14 @@ a { color: var(--azul); }
 
 .etiqueta {
   color: var(--rojo);
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin: 0;
   font-size: 0.85rem;
 }
 
-.lead { color: var(--texto); max-width: 42rem; }
+.lead { color: var(--texto); max-width: 42rem; font-weight: 500; }
 
 .rejilla {
   display: grid;
@@ -93,8 +94,8 @@ a { color: var(--azul); }
 }
 
 .tarjeta {
-  border: 1.5px solid var(--borde);
-  border-top: 5px solid var(--azul);
+  border: 2px solid #80b3ff;
+  border-top: 6px solid var(--azul);
   padding: 1.1rem 1.2rem 1.3rem;
   background: var(--fondo);
   min-height: 260px;
@@ -103,7 +104,7 @@ a { color: var(--azul); }
 }
 
 .tarjeta h2 { color: var(--azul); margin: 0.4rem 0 0.2rem; font-size: 1.25rem; font-weight: 900; }
-.subtitulo { color: var(--rojo); font-weight: 700; margin: 0 0 0.6rem; }
+.subtitulo { color: var(--rojo); font-weight: 800; margin: 0 0 0.6rem; }
 
 .badge {
   display: inline-flex;
@@ -118,7 +119,7 @@ a { color: var(--azul); }
   font-size: 0.9rem;
 }
 
-.meta { color: #333; font-size: 0.9rem; margin-top: auto; }
+.meta { color: #111; font-size: 0.9rem; margin-top: auto; font-weight: 600; }
 
 .boton {
   display: inline-block;
@@ -127,43 +128,43 @@ a { color: var(--azul); }
   text-decoration: none;
   border: 0;
   padding: 0.7rem 1.2rem;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   font-size: 1rem;
   font-family: inherit;
   border-radius: 4px;
 }
 
-.boton:hover { background: #073861; }
+.boton:hover { background: #003399; }
 .boton-verde { background: var(--rojo); color: #ffffff; }
-.boton-verde:hover { background: #b52217; }
+.boton-verde:hover { background: #cc0029; }
 .tarjeta .boton { margin-top: 0.5rem; align-self: flex-start; }
 
 .bloque-todas {
   margin-top: 2rem;
   padding: 1.4rem 1.5rem;
-  border: 2px dashed var(--rojo);
+  border: 3px dashed var(--rojo);
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   align-items: center;
   justify-content: space-between;
-  background: #fffdfd;
+  background: #fff5f7;
 }
 
 .bloque-todas h2 { color: var(--azul); margin: 0 0 0.35rem; font-weight: 900; }
-.bloque-todas p { margin: 0; max-width: 36rem; }
+.bloque-todas p { margin: 0; max-width: 36rem; font-weight: 600; }
 
 .panel {
-  border: 1.5px solid var(--borde);
+  border: 2px solid #80b3ff;
   padding: 1.4rem 1.5rem 1.6rem;
   background: var(--fondo);
 }
 
-.migas { font-size: 0.9rem; margin-bottom: 1rem; }
+.migas { font-size: 0.9rem; margin-bottom: 1rem; font-weight: 700; }
 .h-seccion { color: var(--azul); font-size: 1.1rem; font-weight: 900; }
 .lista-instrucciones { padding-left: 1.2rem; }
-.lista-instrucciones li { margin-bottom: 0.55rem; }
+.lista-instrucciones li { margin-bottom: 0.55rem; font-weight: 500; }
 
 .acciones {
   display: flex;
@@ -173,18 +174,18 @@ a { color: var(--azul); }
   margin-top: 1.4rem;
 }
 
-.enlace { font-weight: 700; color: var(--azul); }
+.enlace { font-weight: 800; color: var(--azul); }
 
 .progreso {
-  height: 10px;
-  background: #f4f6f8;
-  border: 1px solid var(--borde);
+  height: 12px;
+  background: #e6f0ff;
+  border: 2px solid var(--azul);
   margin-bottom: 0.4rem;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
-.progreso-barra { height: 100%; background: var(--rojo); border-radius: 3px; }
-.progreso-texto { margin: 0 0 1rem; color: var(--azul); font-weight: 800; font-size: 0.95rem; }
+.progreso-barra { height: 100%; background: var(--rojo); border-radius: 4px; }
+.progreso-texto { margin: 0 0 1rem; color: var(--azul); font-weight: 900; font-size: 0.95rem; }
 
 .opciones {
   border: 0;
@@ -199,39 +200,41 @@ a { color: var(--azul); }
   grid-template-columns: auto auto 1fr;
   gap: 0.7rem;
   align-items: start;
-  border: 1.5px solid var(--borde);
+  border: 2px solid #80b3ff;
   padding: 0.75rem 0.9rem;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
+  background: #fafbfc;
 }
 
 .opcion:hover, .opcion:has(input:checked) {
   border-color: var(--azul);
-  background: var(--suave);
+  background: #e6f0ff;
 }
 
-.letra { color: var(--rojo); font-weight: 900; min-width: 1.2rem; }
+.letra { color: var(--rojo); font-weight: 900; min-width: 1.2rem; font-size: 1.05rem; }
 
 .alerta {
-  background: #fff4e5;
-  border: 1.5px solid #e0b15a;
+  background: #fff3cd;
+  border: 2px solid #ffaa00;
   padding: 0.6rem 0.8rem;
+  font-weight: 600;
 }
 
-.puntaje { font-size: 1.15rem; }
+.puntaje { font-size: 1.15rem; font-weight: 700; }
 .puntaje .num { color: var(--rojo); font-size: 2.5rem; font-weight: 900; }
 .puntaje-mini { color: var(--azul); font-weight: 900; }
 
 .revision { margin-top: 1rem; }
 .revision.ok { border-left: 6px solid var(--rojo); }
-.revision.mal { border-left: 6px solid #b42318; }
-.explicacion { color: #111; }
-.revision img { max-width: 100%; height: auto; border: 1px solid var(--borde); margin: 0.5rem 0; }
+.revision.mal { border-left: 6px solid #cc0000; }
+.explicacion { color: #111; font-weight: 500; }
+.revision img { max-width: 100%; height: auto; border: 2px solid #80b3ff; margin: 0.5rem 0; }
 
 .pregunta-img {
   width: 100%;
   height: auto;
-  border: 1px solid var(--borde);
+  border: 2px solid #80b3ff;
   display: block;
   background: #fff;
 }
@@ -248,12 +251,13 @@ a { color: var(--azul); }
   width: 5rem;
   padding: 0.45rem 0.5rem;
   font-size: 1rem;
-  border: 1.5px solid var(--borde);
+  border: 2px solid var(--azul);
+  font-weight: 700;
 }
 
 .contacto {
   margin-top: 1.5rem;
-  border-top: 5px solid var(--rojo);
+  border-top: 6px solid var(--rojo);
 }
 
 .contacto h2 { color: var(--azul); margin: 0.3rem 0 0.6rem; font-weight: 900; }
