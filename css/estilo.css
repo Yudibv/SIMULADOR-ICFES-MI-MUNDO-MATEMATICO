@@ -1,10 +1,10 @@
 :root {
-  --azul: #035ca7;
-  --rojo: #dc3545; /* Definimos nuestro color rojo principal */
-  --texto: #111111;
+  --azul: #003399; /* Azul rey más fuerte y vivo */
+  --rojo: #e60000; /* Rojo vibrante y con gran contraste */
+  --texto: #000000;
   --fondo: #ffffff;
-  --suave: #fdf2f2;
-  --borde: #f5c6cb;
+  --suave: #ffe6e6; /* Fondo de selección rojizo más claro y nítido */
+  --borde: #ffb3b3;
 }
 
 * { box-sizing: border-box; }
@@ -27,7 +27,7 @@ a { color: var(--azul); }
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  border-bottom: 3px solid var(--azul);
+  border-bottom: 4px solid var(--azul);
   position: sticky;
   top: 0;
   background: #fff;
@@ -41,17 +41,17 @@ a { color: var(--azul); }
   gap: 0.5rem;
 }
 
-.marca-icfes { color: var(--azul); font-weight: 800; letter-spacing: 0.08em; }
-.marca-area { color: var(--rojo); font-weight: 700; } /* Detalle en rojo */
+.marca-icfes { color: var(--azul); font-weight: 900; letter-spacing: 0.08em; }
+.marca-area { color: var(--rojo); font-weight: 800; }
 
 .modo-todas, .temporizador {
   margin: 0;
   color: var(--azul);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.95rem;
 }
 
-.temporizador.aviso { color: #b42318; }
+.temporizador.aviso { color: #d00000; }
 
 .contenedor {
   max-width: 980px;
@@ -61,25 +61,26 @@ a { color: var(--azul); }
 
 .pie {
   text-align: center;
-  color: #444;
+  color: #222;
   font-size: 0.85rem;
   padding: 1.5rem;
-  border-top: 1px solid var(--borde);
+  border-top: 2px solid var(--borde);
 }
 
 .hero h1, .panel h1 {
-  color: var(--azul); /* Título principal en azul como en tu foto */
+  color: var(--azul);
   margin: 0.2rem 0 0.6rem;
   font-size: 2rem;
+  font-weight: 800;
 }
 
 .etiqueta {
-  color: var(--rojo); /* Etiqueta superior en rojo */
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  color: var(--rojo);
+  font-weight: 800;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
 
 .lead { color: var(--texto); max-width: 42rem; }
@@ -92,8 +93,8 @@ a { color: var(--azul); }
 }
 
 .tarjeta {
-  border: 1px solid var(--borde);
-  border-top: 4px solid var(--azul);
+  border: 1.5px solid #ccd6e0;
+  border-top: 5px solid var(--azul);
   padding: 1.1rem 1.2rem 1.3rem;
   background: var(--fondo);
   min-height: 260px;
@@ -101,8 +102,8 @@ a { color: var(--azul); }
   flex-direction: column;
 }
 
-.tarjeta h2 { color: var(--azul); margin: 0.4rem 0 0.2rem; font-size: 1.25rem; }
-.subtitulo { color: var(--rojo); font-weight: 600; margin: 0 0 0.6rem; } /* Subtítulos de las tarjetas en rojo */
+.tarjeta h2 { color: var(--azul); margin: 0.4rem 0 0.2rem; font-size: 1.25rem; font-weight: 800; }
+.subtitulo { color: var(--rojo); font-weight: 700; margin: 0 0 0.6rem; }
 
 .badge {
   display: inline-flex;
@@ -111,29 +112,31 @@ a { color: var(--azul); }
   width: 2.4rem;
   height: 2.4rem;
   border-radius: 999px;
-  background: var(--azul); /* Círculos de los números (01, 02) en azul */
+  background: var(--azul);
   color: #fff;
-  font-weight: 800;
-  font-size: 0.85rem;
+  font-weight: 900;
+  font-size: 0.9rem;
 }
 
-.meta { color: #333; font-size: 0.9rem; margin-top: auto; }
+.meta { color: #222; font-size: 0.9rem; margin-top: auto; }
 
 .boton {
   display: inline-block;
-  background: var(--azul); /* Botones de Empezar en azul tal cual tu foto */
+  background: var(--azul);
   color: #fff;
   text-decoration: none;
   border: 0;
-  padding: 0.7rem 1.1rem;
-  font-weight: 700;
+  padding: 0.7rem 1.2rem;
+  font-weight: 800;
   cursor: pointer;
   font-size: 1rem;
   font-family: inherit;
+  border-radius: 3px;
 }
 
-.boton:hover { filter: brightness(1.08); }
-.boton-verde { background: var(--rojo); color: #ffffff; } /* Opciones o botones secundarios en rojo */
+.boton:hover { background: #002266; }
+.boton-verde { background: var(--rojo); color: #ffffff; }
+.boton-verde:hover { background: #b30000; }
 .tarjeta .boton { margin-top: 0.5rem; align-self: flex-start; }
 
 .bloque-todas {
@@ -147,17 +150,17 @@ a { color: var(--azul); }
   justify-content: space-between;
 }
 
-.bloque-todas h2 { color: var(--azul); margin: 0 0 0.35rem; }
+.bloque-todas h2 { color: var(--azul); margin: 0 0 0.35rem; font-weight: 800; }
 .bloque-todas p { margin: 0; max-width: 36rem; }
 
 .panel {
-  border: 1px solid var(--borde);
+  border: 1.5px solid #ccd6e0;
   padding: 1.4rem 1.5rem 1.6rem;
   background: var(--fondo);
 }
 
 .migas { font-size: 0.9rem; margin-bottom: 1rem; }
-.h-seccion { color: var(--azul); font-size: 1.1rem; }
+.h-seccion { color: var(--azul); font-size: 1.1rem; font-weight: 800; }
 .lista-instrucciones { padding-left: 1.2rem; }
 .lista-instrucciones li { margin-bottom: 0.55rem; }
 
@@ -169,17 +172,18 @@ a { color: var(--azul); }
   margin-top: 1.4rem;
 }
 
-.enlace { font-weight: 600; }
+.enlace { font-weight: 700; color: var(--azul); }
 
 .progreso {
-  height: 8px;
-  background: var(--suave);
-  border: 1px solid var(--borde);
+  height: 10px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
   margin-bottom: 0.4rem;
+  border-radius: 4px;
 }
 
-.progreso-barra { height: 100%; background: var(--rojo); }
-.progreso-texto { margin: 0 0 1rem; color: var(--azul); font-weight: 600; font-size: 0.95rem; }
+.progreso-barra { height: 100%; background: var(--rojo); border-radius: 3px; }
+.progreso-texto { margin: 0 0 1rem; color: var(--azul); font-weight: 700; font-size: 0.95rem; }
 
 .opciones {
   border: 0;
@@ -194,38 +198,39 @@ a { color: var(--azul); }
   grid-template-columns: auto auto 1fr;
   gap: 0.7rem;
   align-items: start;
-  border: 1px solid var(--borde);
+  border: 1.5px solid #ccc;
   padding: 0.75rem 0.9rem;
   cursor: pointer;
+  border-radius: 4px;
 }
 
 .opcion:hover, .opcion:has(input:checked) {
   border-color: var(--azul);
-  background: var(--suave);
+  background: #eef4ff;
 }
 
-.letra { color: var(--rojo); font-weight: 800; min-width: 1.2rem; }
+.letra { color: var(--rojo); font-weight: 900; min-width: 1.2rem; }
 
 .alerta {
-  background: #fff4e5;
-  border: 1px solid #e0b15a;
+  background: #fff0d6;
+  border: 1.5px solid #d98200;
   padding: 0.6rem 0.8rem;
 }
 
 .puntaje { font-size: 1.15rem; }
-.puntaje .num { color: var(--rojo); font-size: 2.4rem; font-weight: 800; }
-.puntaje-mini { color: var(--azul); font-weight: 700; }
+.puntaje .num { color: var(--rojo); font-size: 2.5rem; font-weight: 900; }
+.puntaje-mini { color: var(--azul); font-weight: 800; }
 
 .revision { margin-top: 1rem; }
-.revision.ok { border-left: 5px solid var(--rojo); }
-.revision.mal { border-left: 5px solid #b42318; }
-.explicacion { color: #222; }
-.revision img { max-width: 100%; height: auto; border: 1px solid var(--borde); margin: 0.5rem 0; }
+.revision.ok { border-left: 6px solid var(--rojo); }
+.revision.mal { border-left: 6px solid #b30000; }
+.explicacion { color: #111; }
+.revision img { max-width: 100%; height: auto; border: 1px solid #ccc; margin: 0.5rem 0; }
 
 .pregunta-img {
   width: 100%;
   height: auto;
-  border: 1px solid var(--borde);
+  border: 1px solid #ccc;
   display: block;
   background: #fff;
 }
@@ -242,16 +247,16 @@ a { color: var(--azul); }
   width: 5rem;
   padding: 0.45rem 0.5rem;
   font-size: 1rem;
-  border: 1px solid var(--borde);
+  border: 1.5px solid #ccc;
 }
 
 .contacto {
   margin-top: 1.5rem;
-  border-top: 4px solid var(--rojo);
+  border-top: 5px solid var(--rojo);
 }
 
-.contacto h2 { color: var(--azul); margin: 0.3rem 0 0.6rem; }
-.contacto a { font-weight: 700; }
+.contacto h2 { color: var(--azul); margin: 0.3rem 0 0.6rem; font-weight: 800; }
+.contacto a { font-weight: 800; }
 
 .oculto { display: none !important; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
