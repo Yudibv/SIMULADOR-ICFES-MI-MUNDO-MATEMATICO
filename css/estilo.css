@@ -1,10 +1,10 @@
 :root {
   --azul: #035ca7;
-  --verde: #dc3545; /* Cambiado a rojo */
+  --rojo: #dc3545; /* Definimos nuestro color rojo principal */
   --texto: #111111;
   --fondo: #ffffff;
-  --suave: #fdf2f2; /* Tono rojizo muy suave para fondos seleccionados */
-  --borde: #f5c6cb; /* Borde con sutil tono rojizo/claro */
+  --suave: #fdf2f2;
+  --borde: #f5c6cb;
 }
 
 * { box-sizing: border-box; }
@@ -42,7 +42,7 @@ a { color: var(--azul); }
 }
 
 .marca-icfes { color: var(--azul); font-weight: 800; letter-spacing: 0.08em; }
-.marca-area { color: var(--verde); font-weight: 700; }
+.marca-area { color: var(--rojo); font-weight: 700; } /* Detalle en rojo */
 
 .modo-todas, .temporizador {
   margin: 0;
@@ -68,13 +68,13 @@ a { color: var(--azul); }
 }
 
 .hero h1, .panel h1 {
-  color: var(--azul);
+  color: var(--azul); /* Título principal en azul como en tu foto */
   margin: 0.2rem 0 0.6rem;
   font-size: 2rem;
 }
 
 .etiqueta {
-  color: var(--verde);
+  color: var(--rojo); /* Etiqueta superior en rojo */
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -102,7 +102,7 @@ a { color: var(--azul); }
 }
 
 .tarjeta h2 { color: var(--azul); margin: 0.4rem 0 0.2rem; font-size: 1.25rem; }
-.subtitulo { color: var(--verde); font-weight: 600; margin: 0 0 0.6rem; }
+.subtitulo { color: var(--rojo); font-weight: 600; margin: 0 0 0.6rem; } /* Subtítulos de las tarjetas en rojo */
 
 .badge {
   display: inline-flex;
@@ -111,7 +111,7 @@ a { color: var(--azul); }
   width: 2.4rem;
   height: 2.4rem;
   border-radius: 999px;
-  background: var(--azul);
+  background: var(--azul); /* Círculos de los números (01, 02) en azul */
   color: #fff;
   font-weight: 800;
   font-size: 0.85rem;
@@ -121,7 +121,7 @@ a { color: var(--azul); }
 
 .boton {
   display: inline-block;
-  background: var(--azul);
+  background: var(--azul); /* Botones de Empezar en azul tal cual tu foto */
   color: #fff;
   text-decoration: none;
   border: 0;
@@ -133,13 +133,13 @@ a { color: var(--azul); }
 }
 
 .boton:hover { filter: brightness(1.08); }
-.boton-verde { background: var(--verde); color: #ffffff; } /* Texto en blanco para el botón rojo */
+.boton-verde { background: var(--rojo); color: #ffffff; } /* Opciones o botones secundarios en rojo */
 .tarjeta .boton { margin-top: 0.5rem; align-self: flex-start; }
 
 .bloque-todas {
   margin-top: 2rem;
   padding: 1.4rem 1.5rem;
-  border: 2px dashed var(--verde);
+  border: 2px dashed var(--rojo);
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -178,7 +178,7 @@ a { color: var(--azul); }
   margin-bottom: 0.4rem;
 }
 
-.progreso-barra { height: 100%; background: var(--verde); }
+.progreso-barra { height: 100%; background: var(--rojo); }
 .progreso-texto { margin: 0 0 1rem; color: var(--azul); font-weight: 600; font-size: 0.95rem; }
 
 .opciones {
@@ -204,7 +204,7 @@ a { color: var(--azul); }
   background: var(--suave);
 }
 
-.letra { color: var(--verde); font-weight: 800; min-width: 1.2rem; }
+.letra { color: var(--rojo); font-weight: 800; min-width: 1.2rem; }
 
 .alerta {
   background: #fff4e5;
@@ -213,11 +213,11 @@ a { color: var(--azul); }
 }
 
 .puntaje { font-size: 1.15rem; }
-.puntaje .num { color: var(--verde); font-size: 2.4rem; font-weight: 800; }
+.puntaje .num { color: var(--rojo); font-size: 2.4rem; font-weight: 800; }
 .puntaje-mini { color: var(--azul); font-weight: 700; }
 
 .revision { margin-top: 1rem; }
-.revision.ok { border-left: 5px solid var(--verde); }
+.revision.ok { border-left: 5px solid var(--rojo); }
 .revision.mal { border-left: 5px solid #b42318; }
 .explicacion { color: #222; }
 .revision img { max-width: 100%; height: auto; border: 1px solid var(--borde); margin: 0.5rem 0; }
@@ -247,7 +247,7 @@ a { color: var(--azul); }
 
 .contacto {
   margin-top: 1.5rem;
-  border-top: 4px solid var(--verde);
+  border-top: 4px solid var(--rojo);
 }
 
 .contacto h2 { color: var(--azul); margin: 0.3rem 0 0.6rem; }
