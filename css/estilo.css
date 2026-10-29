@@ -1,10 +1,10 @@
 :root {
   --azul: #035ca7;
-  --verde: #9acc64;
+  --verde: #dc3545; /* Cambiado a rojo */
   --texto: #111111;
   --fondo: #ffffff;
-  --suave: #f4f7fb;
-  --borde: #d9e4f0;
+  --suave: #fdf2f2; /* Tono rojizo muy suave para fondos seleccionados */
+  --borde: #f5c6cb; /* Borde con sutil tono rojizo/claro */
 }
 
 * { box-sizing: border-box; }
@@ -133,7 +133,7 @@ a { color: var(--azul); }
 }
 
 .boton:hover { filter: brightness(1.08); }
-.boton-verde { background: var(--verde); color: #113300; }
+.boton-verde { background: var(--verde); color: #ffffff; } /* Texto en blanco para el botón rojo */
 .tarjeta .boton { margin-top: 0.5rem; align-self: flex-start; }
 
 .bloque-todas {
