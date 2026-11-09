@@ -1,320 +1,218 @@
-import {
-  cargarContacto,
-  cargarTemas,
-  elegirPreguntas,
-  htmlContacto,
-  MINUTOS_DEFAULT,
-  urlPng,
-} from "./temas.js";
+import { cargarTemas, urlPng, PREGUNTAS_POR_PRUEBA } from "./temas.js";
 
-const CLAVE = "simuladorIcfes";
-const params = new URLSearchParams(location.search);
-const root = document.getElementById("vista");
-const etiquetaModo = document.getElementById("modo-todas");
-const reloj = document.getElementById("temporizador");
+let state = {
+  temas: [],
+  cola: [],
+  indiceTema: 0,
+  seleccion: [],
+  item: 0,
+  respuestas: {},
+  todas: false
+};
 
-let temas = [];
-let contacto = null;
-let timerId = null;
-
-function estado() {
-  return JSON.parse(sessionStorage.getItem(CLAVE) || "null");
+function obtenerContenedor() {
+  let root = document.getElementById("vista") || document.getElementById("root") || document.getElementById("panel") || document.querySelector("main");
+  if (!root) {
+    root = document.createElement("main");
+    root.id = "vista";
+    document.body.appendChild(root);
+  }
+  return root;
 }
 
-function guardar(data) {
-  sessionStorage.setItem(CLAVE, JSON.stringify(data));
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const temaId = params.get("tema");
+  const esTodas = params.get("todas") === "1";
+
+  state.temas = aliasTemas(await cargarTemas());
+  const root = obtenerContenedor();
+  
+  if (!state.temas.length) {
+    root.innerHTML = `<p class="alerta" style="padding: 20px; color: red;">No se pudieron cargar los temas. Revisa el archivo indice.json.</p>`;
+    return;
+  }
+
+  if (esTodas) {
+    state.todas = true;
+    state.cola = state.temas.map(t => t.id);
+  } else if (temaId) {
+    state.cola = [temaId];
+  } else {
+    state.cola = [state.temas[0].id];
+  }
+
+  prepararTemaActual();
+  renderPregunta(state);
 }
 
-function fmt(seg) {
-  const m = Math.floor(seg / 60);
-  const s = seg % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
-
-function detenerTimer() {
-  if (timerId) clearInterval(timerId);
-  timerId = null;
-  reloj.classList.add("oculto");
-}
-
-function iniciarTimer(st) {
-  detenerTimer();
-  reloj.classList.remove("oculto");
-  const tick = () => {
-    const ahora = Date.now();
-    const queda = Math.max(0, Math.ceil((st.fin - ahora) / 1000));
-    reloj.textContent = fmt(queda);
-    reloj.classList.toggle("aviso", queda <= 60);
-    if (queda <= 0) {
-      detenerTimer();
-      terminarPrueba(st, true);
-    }
-  };
-  tick();
-  timerId = setInterval(tick, 250);
+function aliasTemas(temas) {
+  return temas.map(t => ({
+    ...t,
+    id: t.id || t.carpeta
+  }));
 }
 
 function temaPorId(id) {
-  return temas.find((t) => t.id === id);
+  return state.temas.find(t => t.id === id || t.carpeta === id) || state.temas[0];
 }
 
-function renderInstrucciones(st) {
-  const tema = temaPorId(st.cola[st.indiceTema]);
-  const n = st.seleccion.length;
-  etiquetaModo.classList.toggle("oculto", !st.todas);
-  if (st.todas) {
-    etiquetaModo.textContent = `Recorrido completo · ${st.indiceTema + 1} de ${st.cola.length}`;
-  }
-  root.innerHTML = `
-    <p class="migas"><a href="index.html">Menú</a> / ${tema.titulo}</p>
-    <section class="panel">
-      <p class="etiqueta">Prueba ${st.indiceTema + 1} de ${st.cola.length}</p>
-      <h1>${tema.titulo}</h1>
-      <p class="lead">${tema.subtitulo || ""}</p>
-      <h2 class="h-seccion">Instrucciones</h2>
-      <ol class="lista-instrucciones">
-        <li>Las imágenes salen del cuadernillo de práctica Icfes Saber 11 (marzo 2026), para uso académico. El Icfes es el titular de esos ítems.</li>
-        <li>Se eligen 15 preguntas al azar de este tema.</li>
-        <li>Cada ítem es de selección múltiple con única respuesta (A, B, C o D).</li>
-        <li>Hay un temporizador. Por defecto dura 15 minutos; puedes cambiarlo abajo.</li>
-        <li>Si se acaba el tiempo, la prueba se cierra con lo que hayas alcanzado a responder.</li>
-        ${st.todas ? "<li>Al terminar este tema pasarás al siguiente, hasta completar todas las carpetas.</li>" : ""}
-      </ol>
-      <label class="campo-tiempo">
-        Tiempo en minutos
-        <input id="minutos" type="number" min="1" max="180" value="${st.minutos || MINUTOS_DEFAULT}">
-      </label>
-      <div class="acciones">
-        <button class="boton" type="button" id="btn-comenzar">Comenzar los ${n} ejercicios</button>
-        <a class="enlace" href="index.html">Volver al menú</a>
-      </div>
-    </section>
-  `;
-  document.getElementById("btn-comenzar").onclick = () => {
-    const mins = Number(document.getElementById("minutos").value);
-    st.minutos = Number.isFinite(mins) && mins >= 1 ? Math.floor(mins) : MINUTOS_DEFAULT;
-    st.paso = "pregunta";
-    st.item = 0;
-    st.respuestas = [];
-    st.fin = Date.now() + st.minutos * 60 * 1000;
-    guardar(st);
-    renderPregunta(st);
-  };
+function prepararTemaActual() {
+  const tema = temaPorId(state.cola[state.indiceTema]);
+  const todasLasPreguntas = tema.preguntas || [];
+  state.seleccion = todasLasPreguntas.slice(0, PREGUNTAS_POR_PRUEBA);
+  state.item = 0;
+  state.respuestas = {};
 }
 
-function renderPregunta(st) {
+export function renderPregunta(st) {
   const tema = temaPorId(st.cola[st.indiceTema]);
   const archivo = st.seleccion[st.item];
   const total = st.seleccion.length;
-  etiquetaModo.classList.toggle("oculto", !st.todas);
-  iniciarTimer(st);
+  const root = obtenerContenedor();
+
+  if (!archivo) {
+    mostrarResultadosFinales(st, tema);
+    return;
+  }
+
+  const rutaImagenFinal = urlPng(tema, archivo);
+  const respuestasClave = (tema.respuestas || {})[archivo];
+  const esMulti = respuestasClave && typeof respuestasClave === "object";
+  const subPreguntas = esMulti ? Object.keys(respuestasClave) : [null];
+
   root.innerHTML = `
-    <p class="migas"><a href="index.html">Menú</a> / ${tema.titulo} / Ejercicio ${st.item + 1}</p>
+    <p class="migas"><a href="index.html">Menú</a> / ${tema.titulo || tema.id} / Ejercicio ${st.item + 1}</p>
     <div class="progreso"><div class="progreso-barra" style="width:${((st.item + 1) / total) * 100}%"></div></div>
     <p class="progreso-texto">Ejercicio ${st.item + 1} de ${total}</p>
     <section class="panel">
-      <img class="pregunta-img" alt="Pregunta ${st.item + 1}" src="${urlPng(tema, archivo)}">
-      <p id="error" class="alerta oculto">Selecciona una opción para continuar.</p>
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img class="pregunta-img" alt="Pregunta ${st.item + 1}" src="${rutaImagenFinal}" onerror="this.style.display='none'; document.getElementById('img-error').style.display='block';">
+        <p id="img-error" style="display:none; color: red; font-size: 0.9rem;">[No se pudo cargar la imagen: ${archivo}]</p>
+      </div>
+      <p id="error" class="alerta oculto" style="margin-bottom: 15px; color: red;">Por favor responde la pregunta para continuar.</p>
+      
       <form id="form-opciones">
-        <fieldset class="opciones">
-          <legend class="sr">Elige una respuesta</legend>
-          ${["A", "B", "C", "D"]
-            .map(
-              (l) => `<label class="opcion"><input type="radio" name="opcion" value="${l}" required>
-              <span class="letra">${l}</span><span>Opción ${l}</span></label>`
-            )
-            .join("")}
-        </fieldset>
+        ${subPreguntas.map((num) => `
+          ${num ? `<h3 class="subtitulo-pregunta" style="color: var(--azul); margin-top: 15px; margin-bottom: 8px;">Pregunta ${num}</h3>` : ""}
+          <fieldset class="opciones" style="margin-bottom: 20px; border: none; padding: 0;">
+            <legend class="sr">Elige una respuesta</legend>
+            ${["A", "B", "C", "D"]
+              .map(
+                (l) => `<label class="opcion" style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; cursor: pointer;">
+                  <input type="radio" name="opcion_${num || 'unica'}" value="${l}" required>
+                  <span class="letra" style="font-weight: bold;">${l}</span><span>Opción ${l}</span>
+                </label>`
+              )
+              .join("")}
+          </fieldset>
+        `).join("")}
+
         <div class="acciones">
-          <button class="boton" type="submit">${textoBoton(st)}</button>
+          <button class="boton" type="submit">${st.item + 1 < total ? 'Siguiente' : 'Ver Diagnóstico y Resultados'}</button>
         </div>
       </form>
     </section>
   `;
+
   document.getElementById("form-opciones").onsubmit = (ev) => {
     ev.preventDefault();
-    const marcada = new FormData(ev.target).get("opcion");
-    if (!marcada) {
-      document.getElementById("error").classList.remove("oculto");
-      return;
-    }
-    st.respuestas[st.item] = marcada;
-    if (st.item + 1 < total) {
-      st.item += 1;
-      guardar(st);
-      renderPregunta(st);
-    } else {
-      terminarPrueba(st, false);
-    }
-  };
-}
-
-function textoBoton(st) {
-  const ultima = st.item + 1 >= st.seleccion.length;
-  if (!ultima) return "Siguiente ejercicio";
-  if (st.todas && st.indiceTema + 1 < st.cola.length) return "Terminar y pasar al siguiente tema";
-  if (st.todas) return "Ver resultado de todas las pruebas";
-  return "Ver resultado";
-}
-
-function resumenTema(st, tema, seleccion, respuestas) {
-  let correctas = 0;
-  const detalle = seleccion.map((archivo, i) => {
-    const clave = tema.respuestas || {};
-    const buena = clave[archivo];
-    const marcada = respuestas[i] || null;
-    const ok = Boolean(buena) && marcada === buena;
-    if (ok) correctas += 1;
-    return {
-      archivo,
-      marcada,
-      buena: buena || null,
-      ok,
-      explicacion: (tema.explicaciones || {})[archivo] || "",
-    };
-  });
-  const hayClave = detalle.some((d) => d.buena);
-  return {
-    titulo: tema.titulo,
-    id: tema.id,
-    correctas,
-    total: seleccion.length,
-    porcentaje: seleccion.length ? Math.round((100 * correctas) / seleccion.length) : 0,
-    hayClave,
-    detalle,
-  };
-}
-
-function terminarPrueba(st, porTiempo) {
-  detenerTimer();
-  const tema = temaPorId(st.cola[st.indiceTema]);
-  const res = resumenTema(st, tema, st.seleccion, st.respuestas || []);
-  st.historico = st.historico || [];
-  st.historico.push({ ...res, porTiempo });
-  if (st.todas && st.indiceTema + 1 < st.cola.length) {
-    st.indiceTema += 1;
-    const siguiente = temaPorId(st.cola[st.indiceTema]);
-    st.seleccion = elegirPreguntas(siguiente);
-    st.paso = "instrucciones";
-    st.item = 0;
-    st.respuestas = [];
-    st.fin = null;
-    guardar(st);
-    renderInstrucciones(st);
-    return;
-  }
-  st.paso = "resultado";
-  guardar(st);
-  renderResultado(st);
-}
-
-function bloqueRevision(res) {
-  return res.detalle
-    .map((d, i) => {
-      const cls = !res.hayClave ? "" : d.ok ? "ok" : "mal";
-      const claveTxt = d.buena
-        ? ` · Correcta: <strong>${d.buena}</strong>`
-        : " · (esta carpeta no trae clave de respuestas)";
-      const tema = temaPorId(res.id);
-      return `
-        <article class="panel revision ${cls}">
-          <p class="meta">Ejercicio ${i + 1}</p>
-          <img class="pregunta-img" alt="" src="${urlPng(tema, d.archivo)}">
-          <p>Tu respuesta: <strong>${d.marcada || "sin marcar"}</strong>${claveTxt}</p>
-          ${d.explicacion ? `<p class="explicacion">${d.explicacion}</p>` : ""}
-        </article>`;
-    })
-    .join("");
-}
-
-function renderResultado(st) {
-  etiquetaModo.classList.add("oculto");
-  const bloques = st.historico || [];
-  const totalOk = bloques.reduce((a, b) => a + (b.hayClave ? b.correctas : 0), 0);
-  const totalPreg = bloques.reduce((a, b) => a + (b.hayClave ? b.total : 0), 0);
-  const pct = totalPreg ? Math.round((100 * totalOk) / totalPreg) : 0;
-  const titulo = st.todas ? "Resultado de todas las pruebas" : bloques[0]?.titulo || "Resultado";
-  root.innerHTML = `
-    <section class="panel resultado-cabecera">
-      <p class="etiqueta">${st.todas ? "Recorrido completo" : "Prueba"}</p>
-      <h1>${titulo}</h1>
-      ${
-        totalPreg
-          ? `<p class="puntaje"><span class="num">${totalOk}</span> / ${totalPreg} correctas · ${pct}%</p>`
-          : "<p>Marcaste tus opciones. Esta carpeta no incluye clave para calificar.</p>"
+    const formData = new FormData(ev.target);
+    
+    if (esMulti) {
+      const respuestasObj = {};
+      for (const num of subPreguntas) {
+        const marcada = formData.get(`opcion_${num}`);
+        if (!marcada) {
+          document.getElementById("error").classList.remove("oculto");
+          return;
+        }
+        respuestasObj[num] = marcada;
       }
-    </section>
-    ${bloques
-      .map(
-        (b) => `
-      <section class="panel">
-        <h2>${b.titulo}</h2>
-        <p class="puntaje-mini">${b.hayClave ? `${b.correctas} / ${b.total} (${b.porcentaje}%)` : `${b.total} preguntas`}</p>
-      </section>
-      ${bloqueRevision(b)}`
-      )
-      .join("")}
-    <div id="caja-contacto"></div>
-    <div class="acciones">
-      <a class="boton" href="index.html">Volver al menú</a>
-    </div>
-  `;
-  document.getElementById("caja-contacto").innerHTML = htmlContacto(contacto);
-  sessionStorage.removeItem(CLAVE);
-}
-
-async function iniciar() {
-  temas = await cargarTemas();
-  contacto = await cargarContacto();
-  if (!temas.length) {
-    root.innerHTML = `<p class="alerta">No hay temas. Agrega carpetas con PNG en <strong>preguntas/</strong>.</p>`;
-    return;
-  }
-
-  let st = estado();
-  const quiereTodas = params.get("todas") === "1";
-  const temaParam = params.get("tema");
-
-  const debeNuevo =
-    !st ||
-    (quiereTodas && !st.todas) ||
-    (!quiereTodas && temaParam && (!st.cola || st.cola[0] !== temaParam || st.todas));
-
-  if (debeNuevo) {
-    if (quiereTodas) {
-      st = {
-        todas: true,
-        cola: temas.map((t) => t.id),
-        indiceTema: 0,
-        minutos: MINUTOS_DEFAULT,
-        paso: "instrucciones",
-        historico: [],
-      };
+      st.respuestas[st.item] = respuestasObj;
     } else {
-      const id = temaParam || temas[0].id;
-      if (!temaPorId(id)) {
-        location.href = "index.html";
+      const marcada = formData.get("opcion_unica");
+      if (!marcada) {
+        document.getElementById("error").classList.remove("oculto");
         return;
       }
-      st = {
-        todas: false,
-        cola: [id],
-        indiceTema: 0,
-        minutos: MINUTOS_DEFAULT,
-        paso: "instrucciones",
-        historico: [],
-      };
+      st.respuestas[st.item] = marcada;
     }
-    st.seleccion = elegirPreguntas(temaPorId(st.cola[0]));
-    guardar(st);
-  }
 
-  if (st.paso === "pregunta") renderPregunta(st);
-  else if (st.paso === "resultado") renderResultado(st);
-  else renderInstrucciones(st);
+    if (st.item + 1 < total) {
+      st.item += 1;
+      renderPregunta(st);
+    } else {
+      mostrarResultadosFinales(st, tema);
+    }
+  };
 }
 
-iniciar().catch((err) => {
-  root.innerHTML = `<p class="alerta">No se pudo cargar la prueba. Usa GitHub Pages o un servidor local.</p>`;
-  console.error(err);
-});
+function mostrarResultadosFinales(st, tema) {
+  let aciertos = 0;
+  let totalPreguntas = st.seleccion.length;
+
+  st.seleccion.forEach((archivo, index) => {
+    const respuestaCorrecta = (tema.respuestas || {})[archivo];
+    const respuestaUsuario = st.respuestas[index];
+
+    if (typeof respuestaCorrecta === "object") {
+      let todasCorrectas = true;
+      for (const subKey in respuestaCorrecta) {
+        if (respuestaUsuario?.[subKey] !== respuestaCorrecta[subKey]) {
+          todasCorrectas = false;
+        }
+      }
+      if (todasCorrectas) aciertos++;
+    } else {
+      if (respuestaUsuario === respuestaCorrecta) {
+        aciertos++;
+      }
+    }
+  });
+
+  const porcentaje = Math.round((aciertos / totalPreguntas) * 100);
+  const root = obtenerContenedor();
+
+  let mensajeDesempeno = "";
+  if (porcentaje >= 80) {
+    mensajeDesempeno = `¡Excelente nivel en <strong>${tema.titulo}</strong>! Tienes bases muy sólidas. Te invitamos a mantener este ritmo con simulacros completos para asegurar tu puntaje máximo en el ICFES.`;
+  } else if (porcentaje >= 50) {
+    mensajeDesempeno = `Tienes bases regulares en <strong>${tema.titulo}</strong>, pero hay vacíos conceptuales en preguntas clave que el ICFES suele evaluar con trampa.`;
+  } else {
+    mensajeDesempeno = `Identificamos oportunidades de mejora críticas en <strong>${tema.titulo}</strong>. Este puntaje en el componente real te restará puntos decisivos para tu ingreso a la universidad.`;
+  }
+
+  root.innerHTML = `
+    <section class="panel" style="text-align: center; padding: 30px;">
+      <h2 style="color: var(--azul);">Diagnóstico: ${tema.titulo}</h2>
+      <p class="lead" style="margin: 0 auto 20px auto;">Reporte de resultados del simulador focalizado.</p>
+      
+      <div class="puntaje" style="margin: 20px 0;">
+        <span class="num">${aciertos} / ${totalPreguntas}</span>
+        <p style="margin: 5px 0; font-weight: 600; color: #555;">Aciertos logrados (${porcentaje}%)</p>
+      </div>
+
+      <div style="background: var(--suave); border: 1px solid var(--borde); padding: 20px; margin: 20px 0; border-radius: 6px; text-align: left;">
+        <h3 style="color: var(--rojo); margin-top: 0;">Análisis personalizado:</h3>
+        <p style="margin: 0; line-height: 1.6;">${mensajeDesempeno}</p>
+      </div>
+
+      <div style="border: 2px dashed var(--rojo); padding: 20px; margin-top: 25px; border-radius: 6px; background: #fffcfc;">
+        <h3 style="color: var(--azul); margin-top: 0;">¿Quieres asegurar tu cupo en la universidad?</h3>
+        <p style="margin-bottom: 15px;">No dejes tu puntaje al azar. Recibe acompañamiento profesional con las clases y tutorías de <strong>Mundo Matemático</strong>.</p>
+        
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+          <a class="boton" href="https://wa.me/573000000000?text=Hola,%20hice%20el%20simulador%20en%20el%20módulo%20de%20${encodeURIComponent(tema.titulo)}%20y%20quiero%20información%20sobre%20las%20clases%20personalizadas" target="_blank" style="background: #25d366; color: white; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-weight: bold;">
+            💬 Agendar Tutoría de Refuerzo
+          </a>
+          <a class="boton" href="index.html" style="text-decoration: none; padding: 10px 20px;">
+            Volver al Menú Principal
+          </a>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+init();
