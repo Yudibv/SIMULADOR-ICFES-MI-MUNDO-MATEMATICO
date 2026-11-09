@@ -76,7 +76,9 @@ export function renderPregunta(st) {
     return;
   }
 
+  // AQUÍ ESTABLECEMOS LA RUTA EXACTA DE LA IMAGEN USANDO LA CARPETA DEL TEMA
   const rutaImagenFinal = urlPng(tema, archivo);
+  
   const respuestasClave = (tema.respuestas || {})[archivo];
   const esMulti = respuestasClave && typeof respuestasClave === "object";
   const subPreguntas = esMulti ? Object.keys(respuestasClave) : [null];
@@ -88,7 +90,7 @@ export function renderPregunta(st) {
     <section class="panel">
       <div style="text-align: center; margin-bottom: 20px;">
         <img class="pregunta-img" alt="Pregunta ${st.item + 1}" src="${rutaImagenFinal}" onerror="this.style.display='none'; document.getElementById('img-error').style.display='block';">
-        <p id="img-error" style="display:none; color: red; font-size: 0.9rem;">[No se pudo cargar la imagen: ${archivo}]</p>
+        <p id="img-error" style="display:none; color: red; font-size: 0.9rem;">[No se pudo cargar la imagen: ${archivo} en la carpeta ${tema.carpeta}]</p>
       </div>
       <p id="error" class="alerta oculto" style="margin-bottom: 15px; color: red;">Por favor responde la pregunta para continuar.</p>
       
